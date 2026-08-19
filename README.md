@@ -30,3 +30,7 @@ Também é possível pressionar `F5` e selecionar **Laboratório acadêmico**.
 ```powershell
 python -m pytest -q
 ```
+
+## Guia para iniciantes
+
+O PDF [`GUIA_COMPLETO_PROJETO_ACADEMICO.pdf`](output/pdf/GUIA_COMPLETO_PROJETO_ACADEMICO.pdf) explica como instalar, executar, estudar, editar, publicar e apresentar o projeto partindo do zero.
