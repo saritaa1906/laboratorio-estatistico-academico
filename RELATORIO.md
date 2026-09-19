@@ -1,21 +1,15 @@
-# Relatório Técnico — Laboratório Estatístico Interativo
+# Relatório Técnico - Laboratório Estatístico Interativo
 
 **Disciplina:** Matemática e Estatística para Computação
-**Grupo:** *[PREENCHER nome do grupo]*
-**Integrante(s):** Sara Martins Oliveira de Sousa — RA 72650204 *[+ demais componentes, se houver]*
-**Repositório:** *[PREENCHER link do GitHub]*
-**Vídeo:** *[PREENCHER link do vídeo]*
-
-> 📌 Este relatório traz pronto tudo o que não depende de rodar a aplicação ao
-> vivo (fórmulas, decisões de implementação, tabela de validação dos testes).
-> Os trechos marcados com **[PREENCHER]** exigem um print ou um número exato
-> tirado da sua execução com o dataset real — veja o passo a passo no final.
+**Integrante(s):** Sara Martins Oliveira de Sousa - RA 72650204
+**Repositório:** *https://github.com/saritaa1906/laboratorio-estatistico-academico*
+**Vídeo:** **
 
 ---
 
 ## 1. Dataset e justificativa
 
-Usamos o **Bank Marketing** do UCI Machine Learning Repository
+Usei o **Bank Marketing** do UCI Machine Learning Repository
 ([link original](https://archive.ics.uci.edu/dataset/222/bank%2Bmarket)),
 com **45.211 registros** de campanhas de telemarketing de um banco português
 oferecendo depósitos a prazo. A base tem 7 variáveis numéricas (`age`,
@@ -24,12 +18,12 @@ categóricas (`job`, `marital`, `education`, `default`, `housing`, `loan`,
 `contact`, `month`, `poutcome`), além do alvo binário `y` — atende com folga
 o critério mínimo (1.000 registros, 4 numéricas, 2 categóricas).
 
-Escolhemos esse dataset porque ele levanta uma pergunta de negócio real e
-intuitiva — *"o que faz uma pessoa aceitar guardar dinheiro no banco quando
-ligam oferecendo?"* — e porque tem variáveis com formatos bem diferentes
-(idade é quase simétrica, saldo e duração da ligação são fortemente
-assimétricos), o que torna os Módulos 3 e 4 (TCL e ajuste de distribuições)
-visualmente ricos.
+Escolhi esse dataset porque ele levanta uma pergunta de negócio real e
+intuitiva - 'o que faz uma pessoa aceitar guardar dinheiro no banco quando
+ligam oferecendo?' - algo com o qual lido de perto na minha rotina de trabalho
+na área. Além disso, o conjunto de dados possui variáveis com formatos bem
+diferentes (idade é quase simétrica, saldo e duração da ligação são fortemente
+assimétricos), o que torna os Módulos 3 e 4 (TCL e ajuste de distribuições) visualmente ricos.
 
 ## 2. Decisões de tratamento dos dados
 
@@ -38,7 +32,7 @@ visualmente ricos.
   por essa razão.
 - **Categorias "unknown":** colunas como `job`, `education`, `contact` e
   `poutcome` trazem o valor `"unknown"` como uma categoria válida (não um
-  nulo) — decidimos mantê-la como categoria própria em vez de descartar
+  nulo) - decidimos mantê-la como categoria própria em vez de descartar
   linhas, já que descartar reduziria a amostra sem necessidade e
   `"unknown"` já é tratado como resposta legítima pelo levantamento
   original.
@@ -48,16 +42,16 @@ visualmente ricos.
   isolando a etapa de "carregar dado" (Pandas) da etapa de "calcular"
   (núcleo próprio).
 - **`pdays = -1`:** é um valor sentinela do dataset original, significando
-  "nunca contatado antes" — não é um outlier nem um erro de digitação, e por
+  "nunca contatado antes" - não é um outlier nem um erro de digitação, e por
   isso não foi filtrado; ele aparece naturalmente na cauda esquerda quando
   essa variável é analisada na aba de distribuições.
 - **Amostragem para os gráficos:** com 45 mil linhas, alguns gráficos de
   dispersão amostram até 10-50 mil pontos (`df.sample(...)`) só por
-  desempenho de renderização — isso não afeta nenhuma estatística exibida,
+  desempenho de renderização - isso não afeta nenhuma estatística exibida,
   que é sempre calculada sobre a coluna completa, não sobre a amostra do
   gráfico.
 
-## 3. Núcleo estatístico — fórmulas implementadas
+## 3. Núcleo estatístico - fórmulas implementadas
 
 Todas as funções abaixo estão em `minhastats.py`, em Python puro (sem
 NumPy/SciPy/`statistics` nas contas).
@@ -132,7 +126,7 @@ covariância/correlação/regressão — os mesmos dados usados para checar cont
 
 As diferenças da ordem de 10⁻¹⁴ a 10⁻¹⁶ são erro de arredondamento de ponto
 flutuante puro (a ordem em que Python e NumPy somam os termos não é
-idêntica) — irrelevantes frente às tolerâncias documentadas, e é exatamente
+idêntica) - irrelevantes frente às tolerâncias documentadas, e é exatamente
 o comportamento que o guia da atividade descreve como esperado.
 
 Casos-limite também testados e cobertos por `pytest.raises(ValueError)`:
@@ -141,55 +135,36 @@ amostral com menos de 2 valores, coeficiente de variação com média zero,
 correlação/regressão com variável X constante, e covariância com vetores de
 tamanhos diferentes.
 
-**[PREENCHER]** — cole aqui o print do terminal com a saída de
-`pytest -v` mostrando todos os testes em verde:
-
 `docs/screenshots/07-testes.png`
 
 ## 5. Os módulos, um a um
 
 ### Módulo 0 — Dados
 `docs/screenshots/01-dados.png`
-*[PREENCHER 2-3 frases: quantas linhas/colunas a aplicação mostrou ao vivo,
-e uma observação sobre a tabela (ex.: quais colunas mais chamaram atenção).]*
 
 ### Módulo 2 — Estatística descritiva
 `docs/screenshots/02-descritiva.png`
-*[PREENCHER: qual variável você escolheu no print, os valores exatos de
-média/mediana/desvio que a aplicação mostrou, quantos outliers o IQR
-detectou, e se a interpretação automática de assimetria bateu com o que o
-histograma mostra visualmente.]*
+`docs/screenshots/02-descritiva(1).png`
+`docs/screenshots/02-descritiva(2).png`
+`docs/screenshots/02-descritiva(3).png`
+
 
 ### Módulo 3 — Simulações (LGN e TCL)
-`docs/screenshots/03-simulacoes.png` e `docs/screenshots/03b-tcl.png`
-*[PREENCHER: com quantas jogadas a frequência relativa já estava
-visualmente colada em 0,5 no seu print; e no TCL, compare o histograma das
-médias com n pequeno vs. n grande — a distribuição ficou mais parecida com
-um sino conforme o tamanho do grupo cresceu?]*
+`docs/screenshots/03-simulacoes.png` e `docs/screenshots/03-simulacoes(1).png`
+
 
 ### Módulo 4 — Distribuições teóricas
 `docs/screenshots/04-distribuicoes.png`
-*[PREENCHER: qual variável você escolheu, e reproduza aqui a frase de
-"discussão honesta" que a própria aplicação gerou — ela disse que a Normal
-ajustou bem ou mal? Por quê, na sua leitura do gráfico?]*
 
 ### Módulo 5 — Correlação e regressão
 `docs/screenshots/05-regressao.png`
-*[PREENCHER: quais duas variáveis você comparou, o valor de r e de R² que
-apareceram na tela, a equação da reta, e um exemplo de predição que você
-testou no simulador (com o valor de X e o Ŷ previsto).]*
 
 ### Módulo 6 — Descobertas
 `docs/screenshots/06-descobertas.png`
-*(texto completo na seção 6 abaixo)*
+`docs/screenshots/06-descobertas(1).png`
 
 ## 6. As três descobertas
 
-> As frases abaixo são o **formato** exigido pelo guia (afirmação + evidência
-> + limite honesto). Rode a aba "6. Conclusões Principais" na aplicação e
-> troque os valores em `[PREENCHER]` pelos números exatos que aparecerem na
-> tela com o dataset completo (45.211 linhas) — os textos da aplicação já
-> saem prontos para colar aqui.
 
 **Descoberta 1 — Poucas pessoas aceitam a proposta.**
 Apenas **[PREENCHER]%** das 45.211 pessoas contatadas aceitaram o depósito a
