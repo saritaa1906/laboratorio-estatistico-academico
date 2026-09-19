@@ -153,6 +153,68 @@ def prever(intercepto, inclinacao, x, x_min=None, x_max=None):
 
 
 
+def coeficiente_assimetria(valores):
+    """Assimetria de Fisher (momentos populacionais): g1 = m3 / m2^(3/2).
+
+    g1 > 0: cauda à direita; g1 < 0: cauda à esquerda; g1 ~ 0: simétrica.
+    """
+    dados = _numeros(valores)
+    n = len(dados)
+    centro = media(dados)
+    m2 = sum((v - centro) ** 2 for v in dados) / n
+    if m2 == 0:
+        raise ValueError("Assimetria é indefinida para variável constante.")
+    m3 = sum((v - centro) ** 3 for v in dados) / n
+    return m3 / m2 ** 1.5
+
+
+def proporcao_entre(valores, inferior, superior):
+    """Fração dos valores em [inferior, superior] (usada na regra empírica 68-95-99,7)."""
+    dados = _numeros(valores)
+    return sum(1 for v in dados if inferior <= v <= superior) / len(dados)
+
+
+def tabela_frequencias(valores, k=None, inicio=None, fim=None):
+    """Tabela de frequências por classes de mesma largura (variável contínua).
+
+    - k padrão: regra de Sturges.
+    - [inicio, fim] padrão: [mínimo, máximo]. Classes fechadas à esquerda e abertas
+      à direita, exceto a última (fechada). Valores fora de [inicio, fim] não entram
+      em nenhuma classe, mas contam no total n (as frequências relativas usam o n todo).
+    - 'densidade' = freq_rel / largura, pronta para sobrepor curvas teóricas.
+    """
+    dados = _numeros(valores)
+    n = len(dados)
+    if k is None:
+        k = num_classes_sturges(n)
+    if k < 1:
+        raise ValueError("k deve ser >= 1.")
+    inicio = min(dados) if inicio is None else inicio
+    fim = max(dados) if fim is None else fim
+    if fim <= inicio:
+        raise ValueError("Intervalo inválido: a variável é constante ou fim <= inicio.")
+    largura = (fim - inicio) / k
+    contagens = [0] * k
+    for v in dados:
+        if inicio <= v <= fim:
+            contagens[min(int((v - inicio) / largura), k - 1)] += 1
+    linhas, acumulada = [], 0.0
+    for i, c in enumerate(contagens):
+        li = inicio + i * largura
+        rel = c / n
+        acumulada += rel
+        linhas.append({
+            "inicio": li,
+            "fim": li + largura,
+            "ponto_medio": li + largura / 2,
+            "freq": c,
+            "freq_rel": rel,
+            "freq_acum": acumulada,
+            "densidade": rel / largura,
+        })
+    return linhas
+
+
 def num_classes_sturges(n):
     """k = 1 + 3,322*log10(n), arredondado para cima."""
     if n <= 0:
@@ -174,6 +236,13 @@ def densidade_exponencial(x, taxa):
     if taxa <= 0:
         raise ValueError("taxa deve ser positiva.")
     return 0.0 if x < 0 else taxa * exp(-taxa * x)
+
+
+def densidade_uniforme(x, a, b):
+    """f(x) da Uniforme(a, b): 1/(b-a) dentro de [a, b], zero fora."""
+    if b <= a:
+        raise ValueError("b deve ser maior que a.")
+    return 1 / (b - a) if a <= x <= b else 0.0
 
 
 def grade_linear(inicio, fim, pontos=200):

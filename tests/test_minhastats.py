@@ -139,6 +139,59 @@ def test_prever_extrapolacao():
     assert fora2 is True
 
 
+# ---------- forma da distribuição e frequências ----------
+def test_coeficiente_assimetria_contra_scipy():
+    assert np.isclose(ms.coeficiente_assimetria(DADOS), stats.skew(DADOS, bias=True), rtol=1e-9)
+    assert np.isclose(ms.coeficiente_assimetria(DADOS_SIMETRICOS),
+                      stats.skew(DADOS_SIMETRICOS, bias=True), rtol=1e-9, atol=1e-12)
+
+
+def test_assimetria_sinal():
+    assert ms.coeficiente_assimetria(DADOS) > 0            # gama: cauda à direita
+    assert ms.coeficiente_assimetria([1, 2, 3, 4, 5]) == pytest.approx(0.0, abs=1e-12)
+
+
+def test_assimetria_variavel_constante():
+    with pytest.raises(ValueError):
+        ms.coeficiente_assimetria([4, 4, 4])
+
+
+def test_proporcao_entre():
+    dados = [1, 2, 3, 4, 5]
+    assert ms.proporcao_entre(dados, 2, 4) == 0.6
+    assert ms.proporcao_entre(dados, 10, 20) == 0.0
+
+
+def test_tabela_frequencias_contra_numpy_histogram():
+    tabela = ms.tabela_frequencias(DADOS)
+    contagens, bordas = np.histogram(DADOS, bins=ms.num_classes_sturges(len(DADOS)))
+    assert [linha["freq"] for linha in tabela] == contagens.tolist()
+    assert np.allclose([linha["inicio"] for linha in tabela], bordas[:-1])
+    assert sum(linha["freq"] for linha in tabela) == len(DADOS)
+    assert np.isclose(tabela[-1]["freq_acum"], 1.0)
+
+
+def test_tabela_frequencias_densidade_integra_um():
+    tabela = ms.tabela_frequencias(DADOS, k=25)
+    largura = tabela[0]["fim"] - tabela[0]["inicio"]
+    assert np.isclose(sum(linha["densidade"] for linha in tabela) * largura, 1.0)
+
+
+def test_tabela_frequencias_recorte_usa_n_total():
+    """Com recorte [inicio, fim], a densidade continua normalizada pelo n TOTAL."""
+    fim = ms.percentil(DADOS, 90)
+    tabela = ms.tabela_frequencias(DADOS, k=20, inicio=min(DADOS), fim=fim)
+    dentro = sum(1 for v in DADOS if v <= fim)
+    assert sum(linha["freq"] for linha in tabela) == dentro
+    ref, _ = np.histogram(DADOS, bins=20, range=(min(DADOS), fim), density=False)
+    assert [linha["freq"] for linha in tabela] == ref.tolist()
+
+
+def test_tabela_frequencias_constante_falha():
+    with pytest.raises(ValueError):
+        ms.tabela_frequencias([3, 3, 3])
+
+
 # ---------- utilidades de visualização ----------
 def test_num_classes_sturges():
     assert ms.num_classes_sturges(1000) == math.ceil(1 + 3.322 * math.log10(1000))
@@ -158,6 +211,14 @@ def test_densidade_exponencial_contra_scipy():
         esperado = stats.expon.pdf(x, scale=1 / taxa)
         assert np.isclose(ms.densidade_exponencial(x, taxa), esperado, rtol=1e-9)
     assert ms.densidade_exponencial(-1, taxa) == 0.0
+
+
+def test_densidade_uniforme_contra_scipy():
+    for x in (-1, 0, 2.5, 5, 6):
+        esperado = stats.uniform.pdf(x, loc=0, scale=5)
+        assert np.isclose(ms.densidade_uniforme(x, 0, 5), esperado, rtol=1e-9)
+    with pytest.raises(ValueError):
+        ms.densidade_uniforme(1, 5, 5)
 
 
 def test_grade_linear_contra_numpy_linspace():
