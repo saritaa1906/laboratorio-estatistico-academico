@@ -142,22 +142,41 @@ tamanhos diferentes.
 ### Módulo 0 — Dados
 `docs/screenshots/01-dados.png`
 
+A aplicação mostrou as 100 primeiras pessoas (linhas) e 17 perguntas/variáveis (colunas), sendo 7 variáveis numéricas e 10 variáveis de texto. A tabela apresenta informações como idade, profissão, estado civil, escolaridade, dívida, saldo em conta e empréstimos, permitindo visualizar diferentes características dos clientes.
+
 ### Módulo 2 — Estatística descritiva
 `docs/screenshots/02-descritiva.png`
 `docs/screenshots/02-descritiva(1).png`
 `docs/screenshots/02-descritiva(2).png`
 `docs/screenshots/02-descritiva(3).png`
 
+A variável escolhida foi Idade da Pessoa. A aplicação mostrou média de 40,94 anos, mediana de 39 anos e desvio-padrão de 10,62 anos. O IQR detectou 487 valores muito fora do normal (outliers). A interpretação automática indica que a maior parte das pessoas está concentrada nos valores menores; visualmente, o histograma confirma uma concentração maior nas idades mais baixas e uma cauda para a direita, indicando assimetria positiva.
+
 
 ### Módulo 3 — Simulações (LGN e TCL)
-`docs/screenshots/03-simulacoes.png` e `docs/screenshots/03-simulacoes(1).png`
+`docs/screenshots/03-simulacoes.png`
+`docs/screenshots/03-simulacoes(1).png`
+
+Na simulação da Lei dos Grandes Números, as frequências relativas das cinco pessoas começam com bastante oscilação, mas vão se aproximando de 0,5 (50%) conforme o número de jogadas aumenta. No print, por volta de 600–800 jogadas as linhas já aparecem visualmente bastante próximas da linha de 50%, ficando ainda mais estáveis com milhares de jogadas.
+
+No TCL, o histograma das médias apresenta um formato aproximadamente de sino, acompanhado pela curva normal. Isso ilustra que, conforme o tamanho dos grupos aumenta, a distribuição das médias tende a ficar mais próxima de uma distribuição normal.
 
 
 ### Módulo 4 — Distribuições teóricas
 `docs/screenshots/04-distribuicoes.png`
 
+A variável escolhida foi Idade da Pessoa. O gráfico compara os dados reais com um molde em forma de sino (Normal) e um molde em queda rápida (Exponencial). Visualmente, os dados apresentam concentração maior aproximadamente entre 30 e 50 anos e uma cauda à direita, portanto o formato real não se encaixa perfeitamente em uma distribuição Normal, embora a curva Normal acompanhe parte do comportamento central.
+
+
 ### Módulo 5 — Correlação e regressão
 `docs/screenshots/05-regressao.png`
+
+As duas variáveis comparadas foram Idade da Pessoa e Dinheiro na Conta (Saldo). A aplicação mostrou r = 0,10 e R² = 1,0%, indicando uma relação linear muito fraca entre as variáveis. A equação apresentada foi Y = 214,5 + (28,038 × X).
+
+Como exemplo, usando X = 40 anos, a equação fornece:
+
+Ŷ = 214,5 + (28,038 × 40) = 1.336,02
+
 
 ### Módulo 6 — Descobertas
 `docs/screenshots/06-descobertas.png`
