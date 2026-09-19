@@ -6,6 +6,8 @@ dados; NumPy é usado somente para SORTEAR números aleatórios nas simulações
 montar objetos de gráfico — nunca para calcular média, variância, quartis,
 correlação, regressão ou densidades.
 """
+import inspect
+
 import numpy as np
 import pandas as pd
 import plotly.express as px
@@ -62,6 +64,23 @@ TRADUCOES_VALORES = {
     },
     "y": {"yes": "Sim, aceitou", "no": "Não aceitou"},
 }
+
+
+def _largura(funcao):
+    """Compatibilidade entre versões do Streamlit: `use_container_width` (antigo) ou `width="stretch"` (novo)."""
+    try:
+        parametros = inspect.signature(funcao).parameters
+    except (TypeError, ValueError):
+        return {"use_container_width": True}
+    return {"use_container_width": True} if "use_container_width" in parametros else {"width": "stretch"}
+
+
+def exibir_grafico(fig, onde=st):
+    onde.plotly_chart(fig, **_largura(onde.plotly_chart))
+
+
+def exibir_tabela(dados, onde=st, **extra):
+    onde.dataframe(dados, **_largura(onde.dataframe), **extra)
 
 
 def nome(coluna):
@@ -163,7 +182,7 @@ def aba_dados():
             df_exibicao[coluna] = df_exibicao[coluna].map(mapa).fillna(df_exibicao[coluna])
     df_exibicao = df_exibicao.rename(columns=COLUNAS_PT)
     st.markdown("##### Primeiros 100 registros")
-    st.dataframe(df_exibicao.head(100), use_container_width=True)
+    exibir_tabela(df_exibicao.head(100))
 
 
 # ==========================================================================
@@ -249,7 +268,7 @@ def aba_descritiva():
         esq, dir_ = st.columns([1, 1])
         with esq:
             st.markdown("##### Medidas de tendência central e dispersão")
-            st.dataframe(medidas, hide_index=True, use_container_width=True)
+            exibir_tabela(medidas, hide_index=True)
         with dir_:
             st.markdown(f"##### Tabela de frequências ({len(tabela_freq)} classes — regra de Sturges)")
             tabela_df = pd.DataFrame({
@@ -259,7 +278,7 @@ def aba_descritiva():
                 "Freq. relativa (%)": [round(l["freq_rel"] * 100, 2) for l in tabela_freq],
                 "Freq. acumulada (%)": [round(l["freq_acum"] * 100, 2) for l in tabela_freq],
             })
-            st.dataframe(tabela_df, hide_index=True, use_container_width=True)
+            exibir_tabela(tabela_df, hide_index=True)
             st.caption(f"k = ⌈1 + 3,322·log₁₀({fmt(n, 0)})⌉ = {len(tabela_freq)} classes de mesma largura.")
 
         g1_col, g2_col = st.columns(2)
@@ -272,7 +291,7 @@ def aba_descritiva():
             fig_hist.add_vline(x=mediana_v, line_color="#28a745", line_dash="dash", annotation_text="mediana")
             fig_hist.update_layout(template="plotly_dark", title=f"Histograma — {nome(col)}",
                                    xaxis_title=nome(col), yaxis_title="Frequência")
-            st.plotly_chart(fig_hist, use_container_width=True)
+            exibir_grafico(fig_hist, st)
         with g2_col:
             fig_box = px.box(pd.DataFrame({col: valores}), y=col, points="outliers",
                              title=f"Boxplot — {nome(col)}", labels={col: nome(col)})
@@ -281,7 +300,7 @@ def aba_descritiva():
             fig_box.add_hline(y=lim_i, line_dash="dot", line_color="#ff3333",
                               annotation_text=f"Q1 − 1,5·IQR = {fmt(lim_i)}")
             fig_box.update_layout(template="plotly_dark")
-            st.plotly_chart(fig_box, use_container_width=True)
+            exibir_grafico(fig_box, st)
 
         forma, outl, var = interpretar_forma(g1, media_v, mediana_v, n_out, n, cv)
         st.success(f"**Interpretação automática**\n\n- {forma}\n- {outl}\n- {var}")
@@ -298,15 +317,15 @@ def aba_descritiva():
         freq["Freq. relativa (%)"] = (freq["Frequência"] / freq["Frequência"].sum() * 100).round(2)
         freq["Freq. acumulada (%)"] = freq["Freq. relativa (%)"].cumsum().round(2)
 
-        st.dataframe(freq, hide_index=True, use_container_width=True)
+        exibir_tabela(freq, hide_index=True)
         a, b = st.columns(2)
         fig_bar = px.bar(freq.head(20), x="Categoria", y="Frequência", title=f"Frequência — {nome(col)}")
         fig_bar.update_layout(template="plotly_dark")
-        a.plotly_chart(fig_bar, use_container_width=True)
+        exibir_grafico(fig_bar, a)
         if len(freq) <= 10:
             fig_pie = px.pie(freq, names="Categoria", values="Frequência", title="Proporção por categoria")
             fig_pie.update_layout(template="plotly_dark")
-            b.plotly_chart(fig_pie, use_container_width=True)
+            exibir_grafico(fig_pie, b)
         moda_cat = freq.iloc[0]
         st.success(f"**Interpretação:** a categoria mais frequente (moda) é **{moda_cat['Categoria']}**, "
                    f"com {fmt(moda_cat['Freq. relativa (%)'])}% dos registros.")
@@ -353,7 +372,7 @@ def aba_simulacoes():
         fig.update_xaxes(type="log")
     fig.update_layout(template="plotly_dark", xaxis_title="Nº de lançamentos",
                       yaxis_title="Frequência relativa de caras", yaxis_range=[0, 1])
-    st.plotly_chart(fig, use_container_width=True)
+    exibir_grafico(fig, st)
     dist10 = max(abs(v - p) for v in apos_10)
     distn = max(abs(v - p) for v in finais)
     st.info(f"Com 10 lançamentos, a maior distância até p foi **{fmt(dist10, 3)}**; "
@@ -413,7 +432,7 @@ def aba_simulacoes():
     fig_o = go.Figure(barras_densidade(tab_orig, "Dados originais", "#7e22ce"))
     fig_o.update_layout(template="plotly_dark", title=f"Dados originais (até o percentil 99) — {nome(col)}",
                         xaxis_title=nome(col), yaxis_title="Densidade")
-    esq.plotly_chart(fig_o, use_container_width=True)
+    exibir_grafico(fig_o, esq)
 
     eixo = ms.grade_linear(tab_med[0]["inicio"], tab_med[-1]["fim"], 250)
     fig_m = go.Figure(barras_densidade(tab_med, f"Médias de amostras (n = {tamanho})", "#7e22ce"))
@@ -422,7 +441,7 @@ def aba_simulacoes():
                           name="Normal(μ, σ/√n)", line={"color": "#f59e0b", "width": 3})
     fig_m.update_layout(template="plotly_dark", title=f"Distribuição das {fmt(repeticoes, 0)} médias amostrais",
                         xaxis_title="Média da amostra", yaxis_title="Densidade")
-    dir_.plotly_chart(fig_m, use_container_width=True)
+    exibir_grafico(fig_m, dir_)
 
     st.success("**Leitura:** com n pequeno as médias ainda lembram a forma assimétrica dos dados; conforme n cresce, "
                "a assimetria das médias tende a 0 e o histograma se aproxima do sino Normal com desvio σ/√n — "
@@ -476,7 +495,7 @@ def aba_distribuicoes():
         fig.add_scatter(x=eixo, y=[f(x) for x in eixo], name=rotulo, line={"color": cor, "width": 3})
     fig.update_layout(template="plotly_dark", xaxis_title=nome(col), yaxis_title="Densidade",
                       title=f"{nome(col)} — histograma × curvas teóricas (eixo até o percentil 99)")
-    st.plotly_chart(fig, use_container_width=True)
+    exibir_grafico(fig, st)
     st.caption("Parâmetros estimados a partir dos dados: Normal (μ = média, σ = desvio populacional); "
                "Exponencial (λ = 1/média dos valores positivos); Uniforme (mín, máx). "
                "O histograma está em densidade, na mesma escala das curvas.")
@@ -490,7 +509,7 @@ def aba_distribuicoes():
             linhas.append({"Distribuição": rotulo,
                            "Erro médio |histograma − curva| (% da maior barra)": round(ms.media(erros) / max_dens * 100, 2)})
         st.markdown("##### Qualidade do ajuste (quanto menor o erro, melhor)")
-        st.dataframe(pd.DataFrame(linhas), hide_index=True, use_container_width=True)
+        exibir_tabela(pd.DataFrame(linhas), hide_index=True)
 
     # ---- discussão automática ----
     p1 = ms.proporcao_entre(dados, mu - sigma, mu + sigma) * 100
@@ -570,7 +589,7 @@ def aba_regressao():
     fig.add_scatter(x=[x_min, x_max], y=[b0 + b1 * x_min, b0 + b1 * x_max],
                     name="Reta de mínimos quadrados", line={"color": "#ff3333", "width": 3})
     fig.update_layout(template="plotly_dark")
-    st.plotly_chart(fig, use_container_width=True)
+    exibir_grafico(fig, st)
 
     m1, m2, m3 = st.columns(3)
     m1.metric("Correlação de Pearson (r)", fmt(r, 3))
@@ -613,7 +632,7 @@ def aba_regressao():
         fig_c = px.imshow(matriz, x=[nome(c) for c in numericas], y=[nome(c) for c in numericas],
                           zmin=-1, zmax=1, color_continuous_scale="RdBu_r", text_auto=".2f")
         fig_c.update_layout(template="plotly_dark", height=600)
-        st.plotly_chart(fig_c, use_container_width=True)
+        exibir_grafico(fig_c, st)
 
 
 # ==========================================================================
@@ -635,7 +654,7 @@ def aba_descobertas():
     desfechos = pd.DataFrame({"Decisão": ["Aceitou", "Não aceitou"], "Clientes": [n_aceitou, len(recusaram)]})
     fig1 = px.bar(desfechos, x="Decisão", y="Clientes", title="Aceitaram × recusaram")
     fig1.update_layout(template="plotly_dark")
-    st.plotly_chart(fig1, use_container_width=True)
+    exibir_grafico(fig1, st)
     st.caption("Limite: é a taxa desta campanha (Portugal, 2008–2010); não se generaliza a outros bancos ou períodos.")
 
     st.divider()
@@ -656,7 +675,7 @@ def aba_descobertas():
     fig2 = px.bar(comp, x="Decisão", y="Segundos", color="Medida", barmode="group",
                   title="Duração da ligação (segundos): média e mediana")
     fig2.update_layout(template="plotly_dark")
-    st.plotly_chart(fig2, use_container_width=True)
+    exibir_grafico(fig2, st)
     st.caption("Limite: é associação, não causa — clientes já interessados tendem a conversar mais.")
 
     st.divider()
@@ -674,7 +693,7 @@ def aba_descobertas():
                           title="Taxa de aceitação: geral × quem já aceitou antes")
             fig3.update_traces(texttemplate="%{text:.1f}%", textposition="outside")
             fig3.update_layout(template="plotly_dark", yaxis_range=[0, 80])
-            st.plotly_chart(fig3, use_container_width=True)
+            exibir_grafico(fig3, st)
             st.caption("Limite: correlação não implica causalidade — quem aceita uma vez pode simplesmente confiar mais "
                        "no banco ou ter perfil financeiro diferente.")
 

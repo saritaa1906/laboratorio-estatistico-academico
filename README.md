@@ -28,7 +28,7 @@ Aplicação web em Python e Streamlit que transforma um conjunto de dados real e
 app.py                    # Interface Streamlit (só apresenta; calcula via minhastats)
 minhastats.py             # Núcleo matemático em Python puro
 data_sources.py           # Carregamento do dataset oficial
-test_minhastats.py        # 42 testes comparando com NumPy/SciPy
+tests/test_minhastats.py  # 42 testes comparando com NumPy/SciPy
 RELATORIO.md              # Relatório técnico
 ROTEIRO_VIDEO.md          # Roteiro do vídeo
 requirements.txt          # Dependências
