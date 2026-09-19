@@ -89,15 +89,28 @@ são esperadas.
 
 ## Capturas de tela
 
+### 1. Visão Geral dos Dados
 ![Aba de dados](docs/screenshots/01-dados.png)
+
+### 2. Estatística Descritiva
 ![Descritiva](docs/screenshots/02-descritiva.png)
 ![Descritiva - Parte 2](docs/screenshots/02-descritiva(1).png)
 ![Descritiva - Parte 3](docs/screenshots/02-descritiva(2).png)
 ![Descritiva - Parte 4](docs/screenshots/02-descritiva(3).png)
+
+### 3. Simulações e Teorema Central do Limite
 ![Lei dos Grandes Números](docs/screenshots/03-simulacoes.png)
 ![Teorema Central do Limite](docs/screenshots/03-simulacoes(1).png)
+
+### 4. Ajuste de Distribuições
 ![Distribuições](docs/screenshots/04-distribuicoes.png)
+
+### 5. Regressão e Correlação
 ![Regressão](docs/screenshots/05-regressao.png)
+
+### 6. Conclusões e Descobertas
 ![Descobertas](docs/screenshots/06-descobertas.png)
 ![Descobertas - Parte 2](docs/screenshots/06-descobertas(1).png)
+
+### 7. Validação e Testes
 ![Testes passando](docs/screenshots/07-testes.png)
