@@ -89,7 +89,6 @@ são esperadas.
 
 ## Capturas de tela
 
-```markdown
 ![Aba de dados](docs/screenshots/01-dados.png)
 ![Descritiva](docs/screenshots/02-descritiva.png)
 ![Descritiva - Parte 2](docs/screenshots/02-descritiva(1).png)
@@ -101,4 +100,3 @@ são esperadas.
 ![Descobertas](docs/screenshots/06-descobertas.png)
 ![Descobertas - Parte 2](docs/screenshots/06-descobertas(1).png)
 ![Testes passando](docs/screenshots/07-testes.png)
-```
