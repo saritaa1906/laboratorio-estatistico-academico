@@ -20,7 +20,7 @@ def test_dispersao_amostral_e_populacional():
 
 def test_quartis_e_coeficiente_de_variacao():
     assert ms.quartis(DADOS) == pytest.approx(tuple(np.percentile(DADOS, [25, 50, 75])))
-    referencia_cv = np.std(DADOS, ddof=1) / abs(np.mean(DADOS)) * 100
+    referencia_cv = (np.std(DADOS, ddof=1) / abs(np.mean(DADOS))) * 100
     assert ms.coeficiente_variacao(DADOS) == pytest.approx(referencia_cv)
 
 @pytest.mark.parametrize("p", [0, 10, 25, 50, 75, 90, 100])
@@ -29,14 +29,20 @@ def test_percentis(p):
 
 def test_covariancia_correlacao_regressao():
     x, y = [1, 2, 3, 4, 5], [2, 5, 5, 8, 10]
+    
     assert ms.covariancia(x, y) == pytest.approx(np.cov(x, y, ddof=1)[0, 1])
     assert ms.covariancia(x, y, amostral=False) == pytest.approx(np.cov(x, y, ddof=0)[0, 1])
-    assert ms.correlacao_pearson(x, y) == pytest.approx(stats.pearsonr(x, y).statistic)
+    
+    # O '# type: ignore' instrui o Pylance a ignorar o aviso de tipagem do SciPy
+    res_pearson = stats.pearsonr(x, y)
+    assert ms.correlacao_pearson(x, y) == pytest.approx(res_pearson.statistic)  # type: ignore
+    
     a, b, r2 = ms.regressao_linear(x, y)
+    
     ref = stats.linregress(x, y)
-    assert a == pytest.approx(ref.intercept)
-    assert b == pytest.approx(ref.slope)
-    assert r2 == pytest.approx(ref.rvalue ** 2)
+    assert a == pytest.approx(ref.intercept)     # type: ignore
+    assert b == pytest.approx(ref.slope)         # type: ignore
+    assert r2 == pytest.approx(ref.rvalue ** 2)  # type: ignore
 
 def test_erros_documentados():
     with pytest.raises(ValueError): ms.media([])
