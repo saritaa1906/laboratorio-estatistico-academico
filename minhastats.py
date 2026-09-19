@@ -7,9 +7,6 @@ referência para validar estes resultados — nunca dentro da própria conta.
 """
 from math import ceil, exp, log10, pi, sqrt
 
-# ==========================================
-# Utilitário interno
-# ==========================================
 def _numeros(valores):
     dados = [float(v) for v in valores]
     if not dados:
@@ -17,9 +14,8 @@ def _numeros(valores):
     return dados
 
 
-# ==========================================
-# Medidas de tendência central
-# ==========================================
+
+
 def media(valores):
     """Média aritmética: soma de todos os valores dividida pela contagem."""
     dados = _numeros(valores)
@@ -44,9 +40,8 @@ def moda(valores):
     return sorted(valor for valor, contagem in contagens.items() if contagem == maior)
 
 
-# ==========================================
-# Medidas de dispersão
-# ==========================================
+
+
 def amplitude(valores):
     """Máximo menos mínimo."""
     dados = _numeros(valores)
@@ -107,9 +102,8 @@ def coeficiente_variacao(valores, amostral=True):
     return desvio_padrao(valores, amostral=amostral) / abs(centro) * 100
 
 
-# ==========================================
-# Duas variáveis: covariância, correlação, regressão
-# ==========================================
+
+
 def covariancia(x, y, amostral=True):
     """Covariância amostral (padrão) ou populacional entre dois vetores pareados."""
     xs, ys = _numeros(x), _numeros(y)
@@ -156,9 +150,9 @@ def prever(intercepto, inclinacao, x, x_min=None, x_max=None):
     return intercepto + inclinacao * x, fora_da_faixa
 
 
-# ==========================================
-# Regra de Sturges (nº de classes de um histograma)
-# ==========================================
+
+
+
 def num_classes_sturges(n):
     """k = 1 + 3,322*log10(n), arredondado para cima."""
     if n <= 0:
@@ -166,9 +160,8 @@ def num_classes_sturges(n):
     return max(1, ceil(1 + 3.322 * log10(n)))
 
 
-# ==========================================
-# Densidades teóricas (para sobrepor aos histogramas do Módulo 4)
-# ==========================================
+
+
 def densidade_normal(x, mu, sigma):
     """f(x) da Normal(mu, sigma) — fórmula fechada, sem scipy."""
     if sigma <= 0:
