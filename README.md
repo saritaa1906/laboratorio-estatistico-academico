@@ -91,11 +91,14 @@ são esperadas.
 
 ```markdown
 ![Aba de dados](docs/screenshots/01-dados.png)
-![Descritiva](docs/screenshots/02-descritiva.png)(docs/screenshots/02-descritiva(1).png)(docs/screenshots/02-descritiva(2).png)(docs/screenshots/02-descritiva(3).png)
+![Descritiva](docs/screenshots/02-descritiva.png)
+![Descritiva - Parte 2](docs/screenshots/02-descritiva(1).png)
 ![Lei dos Grandes Números](docs/screenshots/03-simulacoes.png)
-![Teorema Central do Limite](docs/screenshots/03-simulacoes(1).png)
+![Teorema Central do Limite](docs/screenshots/03b-tcl.png)
+![Teorema Central do Limite - Parte 2](docs/screenshots/03b-tcl(1).png)
 ![Distribuições](docs/screenshots/04-distribuicoes.png)
 ![Regressão](docs/screenshots/05-regressao.png)
-![Descobertas](docs/screenshots/06-descobertas.png)(docs/screenshots/06-descobertas(1).png)
+![Descobertas](docs/screenshots/06-descobertas.png)
+![Descobertas - Parte 2](docs/screenshots/06-descobertas(1).png)
 ![Testes passando](docs/screenshots/07-testes.png)
 ```
