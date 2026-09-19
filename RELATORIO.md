@@ -186,24 +186,13 @@ Como exemplo, usando X = 40 anos, a equação fornece:
 
 
 **Descoberta 1 — Poucas pessoas aceitam a proposta.**
-Apenas **[PREENCHER]%** das 45.211 pessoas contatadas aceitaram o depósito a
-prazo (gráfico de barras "Aceitou vs Recusou"). *Limite honesto: é a taxa de
-conversão desta campanha específica (2008–2010, Portugal) — não deve ser
-generalizada para outros bancos, países ou períodos.*
+Apenas 11,7% das 45.211 pessoas contatadas aceitaram o depósito a prazo (gráfico de barras "Aceitou vs Recusou"). Limite honesto: é a taxa de conversão desta campanha específica (2008–2010, Portugal) — não deve ser generalizada para outros bancos, países ou períodos.
 
 **Descoberta 2 — Conversas mais longas têm mais sucesso.**
-Entre quem aceitou, a ligação durou em média **[PREENCHER]** segundos;
-entre quem recusou, **[PREENCHER]** segundos (gráfico "Tempo Médio da
-Conversa"). *Limite honesto: é associação, não causa — pode ser que quem já
-está mais interessado deixe a ligação se estender, e não que a ligação longa
-"convença" a pessoa.*
+Entre quem aceitou, a ligação durou em média 537 segundos; entre quem recusou, 221 segundos (gráfico "Tempo Médio da Conversa"). Limite honesto: é associação, não causa — pode ser que quem já está mais interessado deixe a ligação se estender, e não que a ligação longa "convença" a pessoa.
 
 **Descoberta 3 — Histórico de campanha anterior importa.**
-Entre quem já tinha aceitado uma campanha anterior (`poutcome = success`),
-**[PREENCHER]%** aceitou de novo, contra a taxa geral de **[PREENCHER]%**.
-*Limite honesto: correlação não implica causalidade — clientes que aceitam
-uma vez podem simplesmente confiar mais no banco, ou ter perfil financeiro
-diferente, sem que a campanha anterior seja a causa direta.*
+Entre quem já tinha aceitado uma campanha anterior (poutcome = success), 64,7% aceitou de novo, contra a taxa geral de 11,7%. Limite honesto: correlação não implica causalidade — clientes que aceitam uma vez podem simplesmente confiar mais no banco, ou ter perfil financeiro diferente, sem que a campanha anterior seja a causa direta.
 
 ## 7. Limitações gerais
 
@@ -215,17 +204,3 @@ diferente, sem que a campanha anterior seja a causa direta.*
   automaticamente para outras instituições ou países.
 - Todas as afirmações de "associação" no relatório são exatamente isso:
   correlação, não causalidade comprovada.
-
----
-
-### Passo a passo para preencher os `[PREENCHER]`
-
-1. Rode `streamlit run app.py` (ou abra a versão publicada).
-2. Para cada módulo, clique na aba correspondente, espere carregar, e tire o
-   print (salve com o nome exato indicado, dentro de `docs/screenshots/`).
-3. Copie os números/textos exatos que a aplicação mostrar (ela já escreve as
-   frases de interpretação prontas — é só colar aqui).
-4. Rode `python -m pytest -v`, tire o print do terminal e salve como
-   `07-testes.png`.
-5. Confira se todas as imagens abrem corretamente no GitHub antes de gerar o
-   PDF final.

@@ -6,9 +6,7 @@ import plotly.graph_objects as go
 import streamlit as st
 from scipy.stats import expon, mode, norm
 
-# ==========================================
-# DICIONÁRIOS DE TRADUÇÃO PARA PORTUGUÊS
-# ==========================================
+
 COLUNAS_PT = {
     "age": "Idade da Pessoa",
     "job": "Profissão / Trabalho",
@@ -49,9 +47,7 @@ TRADUCOES_VALORES = {
     "y": {"yes": "Sim, Aceitou", "no": "Não Aceitou"}
 }
 
-# ==========================================
-# CARREGAMENTO E MÓDULOS AUXILIARES
-# ==========================================
+
 def carregar_dados_fallback():
     url = "https://raw.githubusercontent.com/raghavan-v/bank-marketing/master/bank.csv"
     try:
@@ -132,9 +128,7 @@ class StatsEngine:
 
 ms = StatsEngine
 
-# ==========================================
-# CONFIGURAÇÃO DE PÁGINA E ESTILO
-# ==========================================
+
 st.set_page_config(page_title="Painel Fácil de Análise de Dados", layout="wide")
 
 st.markdown("""
@@ -159,9 +153,7 @@ Aqui você pode ver o perfil das pessoas, quanto tempo conversaram e se aceitara
 """)
 st.divider()
 
-# ==========================================
-# CARREGAMENTO DOS DADOS
-# ==========================================
+
 @st.cache_data(ttl=300, show_spinner="Buscando as informações...")
 def obter_dados():
     return carregar_uci()
@@ -182,9 +174,7 @@ total_exibido = df.attrs.get("total_registros", len(df))
 
 st.sidebar.metric("Número Total de Pessoas Analisadas", f"{total_exibido:,}".replace(",", "."))
 
-# ==========================================
-# ESTRUTURA DE ABAS SIMPLIFICADAS
-# ==========================================
+
 tab_dados, tab_descritiva, tab_simulacoes, tab_distribuicoes, tab_regressao, tab_descobertas = st.tabs([
     "1. Ver os Dados",
     "2. Resumo das Pessoas",
@@ -447,7 +437,72 @@ with tab_descobertas:
         
         st.info(f"**2. Conversas Mais Longas Funcionam Melhor:** Quando a pessoa aceitou a proposta, a conversa ao telefone durou em média **{duracao_sim / 60:.1f} minutos** ({duracao_sim:.0f} segundos). Já quando a pessoa recusou, a conversa durou apenas **{duracao_nao / 60:.1f} minutos** ({duracao_nao:.0f} segundos).")
         medias_duracao = pd.DataFrame({"adesao": ["Sim, Aceitou", "Não Aceitou"], "duracao_media": [duracao_sim, duracao_nao]})
-        
+
         fig_d2 = px.bar(medias_duracao, x="adesao", y="duracao_media", title="Tempo Médio da Conversa no Telefone (em segundos)", labels={"adesao": "Decisão do Cliente", "duracao_media": "Segundos de Conversa"})
         fig_d2.update_layout(template="plotly_dark")
         st.plotly_chart(fig_d2, use_container_width=True)
+
+
+        # Descoberta 3 — Histórico de campanha anterior
+        if "poutcome" in df.columns:
+            historico_sucesso = df[df["poutcome"] == "success"]
+
+            if len(historico_sucesso) > 0:
+                quantidade_novamente = len(
+                    historico_sucesso[historico_sucesso["y"] == "yes"]
+                )
+
+                taxa_retorno = quantidade_novamente / len(historico_sucesso) * 100
+
+                st.warning(
+                    f"**3. Histórico de Campanha Anterior Importa:** "
+                    f"Entre quem já tinha aceitado uma campanha anterior "
+                    f"(`poutcome = success`), **{taxa_retorno:.1f}%** "
+                    f"aceitou de novo, contra a taxa geral de **{taxa:.1f}%**."
+                )
+
+                # Dados para o gráfico
+                comparacao_historico = pd.DataFrame({
+                    "Grupo": [
+                        "Taxa Geral",
+                        "Já Aceitou Antes"
+                    ],
+                    "taxa_aceitacao": [
+                        taxa,
+                        taxa_retorno
+                    ]
+                })
+
+                # Gráfico da Descoberta 3
+                fig_d3 = px.bar(
+                    comparacao_historico,
+                    x="Grupo",
+                    y="taxa_aceitacao",
+                    title="Taxa de Aceitação: Geral vs. Clientes que Já Aceitaram Antes",
+                    labels={
+                        "Grupo": "Grupo de Clientes",
+                        "taxa_aceitacao": "Taxa de Aceitação (%)"
+                    },
+                    text="taxa_aceitacao"
+                )
+
+                fig_d3.update_traces(
+                    texttemplate="%{text:.1f}%",
+                    textposition="outside"
+                )
+
+                fig_d3.update_layout(
+                    template="plotly_dark",
+                    yaxis_range=[0, 70]
+                )
+
+                st.plotly_chart(
+                    fig_d3,
+                    use_container_width=True
+                )
+
+                st.caption(
+                    "Comparação entre a taxa geral de aceitação e a taxa de "
+                    "aceitação entre pessoas que já haviam aceitado uma "
+                    "campanha anterior. Correlação não implica causalidade."
+                )

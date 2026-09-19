@@ -111,6 +111,7 @@ são esperadas.
 ### 6. Conclusões e Descobertas
 ![Descobertas](docs/screenshots/06-descobertas.png)
 ![Descobertas - Parte 2](docs/screenshots/06-descobertas(1).png)
+![Descobertas - Parte 3](docs/screenshots/06-descobertas(2).png)
 
 ### 7. Validação e Testes
 ![Testes passando](docs/screenshots/07-testes.png)
