@@ -51,10 +51,10 @@ $$\left[\,Q_1 - 1{,}5\cdot IQR \;;\; Q_3 + 1{,}5\cdot IQR\,\right]$$
 $$CV = \frac{s}{|\bar{x}|}\times 100$$
 
 **Covariância amostral:**
-$$\operatorname{cov}(x,y) = \frac{\sum_{i=1}^n (x_i-\bar{x})(y_i-\bar{y})}{n-1}$$
+$$\text{cov}(x,y) = \frac{\sum_{i=1}^n (x_i-\bar{x})(y_i-\bar{y})}{n-1}$$
 
 **Correlação de Pearson:**
-$$r = \frac{\operatorname{cov}(x,y)}{s_x \, s_y}$$
+$$r = \frac{\text{cov}(x,y)}{s_x \, s_y}$$
 
 **Regressão linear (mínimos quadrados):**
 $$b_1 = \frac{\sum(x_i-\bar{x})(y_i-\bar{y})}{\sum(x_i-\bar{x})^2} \qquad b_0 = \bar{y} - b_1\bar{x} \qquad R^2 = 1 - \frac{\sum(y_i - \hat{y}_i)^2}{\sum(y_i-\bar{y})^2}$$
