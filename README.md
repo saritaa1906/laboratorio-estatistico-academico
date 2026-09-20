@@ -2,7 +2,7 @@
 
 **Disciplina:** Matemática e Estatística para Computação
 **Integrante:** Sara Martins Oliveira de Sousa — RA 72650204
-**Vídeo de demonstração:** -
+**Vídeo de demonstração:** https://youtu.be/QshIyZCvTrk
 
 Aplicação web em Python e Streamlit que transforma um conjunto de dados real em um laboratório interativo de estatística. O núcleo matemático (`minhastats.py`) foi implementado do zero, em Python puro, e validado por testes automatizados contra NumPy e SciPy. **Todas as medidas exibidas na interface vêm dessa biblioteca própria.**
 
