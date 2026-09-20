@@ -40,6 +40,41 @@ def moda(valores):
     return sorted(valor for valor, contagem in contagens.items() if contagem == maior)
 
 
+def frequencia_categorica(valores):
+    """Tabela de frequência para variáveis categóricas."""
+    if valores is None:
+        raise ValueError("Os valores não podem ser nulos.")
+
+    dados = list(valores)
+
+    if not dados:
+        raise ValueError("A amostra não pode estar vazia.")
+
+    contagens = {}
+
+    for valor in dados:
+        categoria = "Não informado" if valor is None else str(valor)
+        contagens[categoria] = contagens.get(categoria, 0) + 1
+
+    total = len(dados)
+    linhas = []
+    acumulada = 0.0
+
+    for categoria, frequencia in sorted(
+        contagens.items(),
+        key=lambda item: (-item[1], item[0])
+    ):
+        relativa = frequencia / total
+        acumulada += relativa
+
+        linhas.append({
+            "categoria": categoria,
+            "frequencia": frequencia,
+            "freq_rel": relativa,
+            "freq_acum": acumulada,
+        })
+
+    return linhas
 
 
 def amplitude(valores):

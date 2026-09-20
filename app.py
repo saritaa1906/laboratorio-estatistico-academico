@@ -1,11 +1,5 @@
-"""Laboratório Estatístico Interativo — interface (Streamlit).
+"""Laboratório Estatístico Interativo — interface (Streamlit)"""
 
-REGRA DE OURO: toda medida estatística exibida nesta interface vem de
-`minhastats.py` (funções implementadas pela autora). Pandas carrega e manipula os
-dados; NumPy é usado somente para SORTEAR números aleatórios nas simulações e para
-montar objetos de gráfico — nunca para calcular média, variância, quartis,
-correlação, regressão ou densidades.
-"""
 import inspect
 
 import numpy as np
@@ -310,13 +304,21 @@ def aba_descritiva():
             st.warning("O dataset não possui variáveis categóricas.")
             return
         col = st.selectbox("Escolha a variável categórica:", categoricas, key="desc_cat", format_func=nome)
-        freq = df[col].fillna("Não informado").astype(str).value_counts().reset_index()
-        freq.columns = ["Categoria", "Frequência"]
-        if col in TRADUCOES_VALORES:
-            freq["Categoria"] = freq["Categoria"].map(TRADUCOES_VALORES[col]).fillna(freq["Categoria"])
-        freq["Freq. relativa (%)"] = (freq["Frequência"] / freq["Frequência"].sum() * 100).round(2)
-        freq["Freq. acumulada (%)"] = freq["Freq. relativa (%)"].cumsum().round(2)
+    valores_categoricos = df[col].fillna("Não informado").astype(str).tolist()
 
+    freq = ms.frequencia_categorica(valores_categoricos)
+
+    freq = pd.DataFrame({
+        "Categoria": [linha["categoria"] for linha in freq],
+        "Frequência": [linha["frequencia"] for linha in freq],
+        "Freq. relativa (%)": [round(linha["freq_rel"] * 100, 2) for linha in freq],
+        "Freq. acumulada (%)": [round(linha["freq_acum"] * 100, 2) for linha in freq],
+    })
+
+    if col in TRADUCOES_VALORES:
+        freq["Categoria"] = freq["Categoria"].map(
+            TRADUCOES_VALORES[col]
+        ).fillna(freq["Categoria"])
         exibir_tabela(freq, hide_index=True)
         a, b = st.columns(2)
         fig_bar = px.bar(freq.head(20), x="Categoria", y="Frequência", title=f"Frequência — {nome(col)}")
