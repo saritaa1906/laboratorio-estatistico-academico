@@ -3,8 +3,7 @@
 **Disciplina:** Matemática e Estatística para Computação
 **Integrante:** Sara Martins Oliveira de Sousa — RA 72650204
 **Repositório:** <https://github.com/saritaa1906/laboratorio-estatistico-academico>
-**Vídeo:** <COLE AQUI O LINK DO VÍDEO>
-
+**Vídeo:** -
 ---
 
 ## 1. Dataset e justificativa
